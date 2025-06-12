@@ -93,24 +93,61 @@ export default function Home() {
         </div>
       </div>
       
-      <div>
-        <h2 className="text-2xl text-center mb-4">Tell me about yourself ✍️</h2>
+      <form
+        id="aiApplyForm"
+        onSubmit={(e) => {
+          e.preventDefault();
+          // handle form submission logic here
+        }}
+        className="w-full max-w-2xl mx-auto my-6 p-6 bg-white rounded shadow"
+      >
+        <h2 className="text-2xl text-center mb-6 font-semibold">Tell me about yourself ✍️</h2>
 
-        <label className="text-center block font-bold mb-1">Attach your resume here:</label>
-        <input type="file" id="fileInput" className="mx-auto block mb-4" />
+        {/* File Upload */}
+        <div className="mb-6">
+          <label htmlFor="fileInput" className="block font-medium mb-2">
+            Attach your resume here:
+          </label>
+          <input
+            type="file"
+            id="fileInput"
+            name="resume"
+            className="block w-full border border-gray-300 rounded p-2"
+          />
+        </div>
 
-        <label className="text-center block font-bold mb-1">Give the AI any relevant information to apply:</label>
-        <textarea
-          id="directions"
-          name="directions"
-          rows="5"
-          cols="50"
-          defaultValue="Type your instructions here. Be detailed."
-          className="block mx-auto w-full max-w-xl p-2 mb-4 border border-gray-300 rounded"
-        ></textarea>
-      </div>
+        {/* Textarea for AI directions */}
+        <div className="mb-6">
+          <label htmlFor="directions" className="block font-medium mb-2">
+            Give the AI any relevant information to apply:
+          </label>
+          <textarea
+            id="directions"
+            name="directions"
+            rows="5"
+            className="block w-full border border-gray-300 rounded p-2"
+            defaultValue="Type your instructions here. Be detailed."
+          ></textarea>
+        </div>
+      </form>
 
-      <button className="px-4 py-2 mx-auto block rounded-sm w-40 bg-blue-300">Crawl</button>
+      <button
+        className="px-4 py-2 mx-auto block rounded-sm w-40 bg-blue-300"
+        onClick={() => {
+          const form = document.getElementById("aiApplyForm");
+          const formData = new FormData(form);
+
+          fetch("http://localhost:5000/crawl", {
+            method: "POST",
+            body: formData,
+          })
+            .then((res) => res.json())
+            .then((data) => console.log("Crawl result:", data))
+            .catch((err) => console.error("Crawl error:", err));
+        }}
+      >
+        Crawl
+      </button>
 
       <footer>
         <p className="text-lg font-bold text-center m-4">Made by Nurdin Hossain 😛. All rights reserved.</p>
