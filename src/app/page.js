@@ -48,24 +48,16 @@ export default function Home() {
       </header>
 
       <div className="flex justify-around">
-        <div> 
-          <h2 className="text-2xl">Already applied✅</h2>
-          <div className="overflow-auto h-48 bg-red-50">
-            {visitedSites.map((site, index) => (
-              <p key={index}>{site.link}</p>
-            ))}
-          </div>
-        </div>
         <div>
-          <h2 className="text-2xl">List of job sites to crawl⏳➡️</h2>
-          <div className="overflow-auto h-48 bg-red-50">
+          <h2 className="text-2xl text-center">List of job sites to crawl⏳➡️</h2>
+          <div className="overflow-auto w-sm h-48 bg-gray-100">
             {unvisitedSites.map((site, index) => (
-              <p key={index}>{site.link}</p>
+              <p key={index} className="pb-2 border-1">{site.link}</p>
             ))}
           </div>
         </div>
-        <div>
-          <h2 className="text-2xl">Add a new site➕</h2>
+        <div className="flex flex-col">
+          <h2 className="text-2xl text-center">Add a new site➕</h2>
           <form id="addLink" onSubmit={handleSubmit}>
             <div>
               <label className="block" htmlFor="link">Link: </label>
@@ -79,6 +71,25 @@ export default function Home() {
           </form>
 
           <button type="submit" form="addLink" value="Submit">Submit</button>
+        </div>
+      </div>
+
+      <div className="flex justify-around">
+        <div> 
+          <h2 className="text-2xl text-center">Already applied✅</h2>
+          <div className="overflow-auto h-48 bg-green-50">
+            {visitedSites.map((site, index) => (
+              <p key={index}>{site.link}</p>
+            ))}
+          </div>
+        </div>
+        <div> 
+          <h2 className="text-2xl text-center">Application failed❌</h2>
+          <div className="overflow-auto h-48 bg-red-50">
+            {visitedSites.map((site, index) => (
+              <p key={index}>{site.link}</p>
+            ))}
+          </div>
         </div>
       </div>
 
