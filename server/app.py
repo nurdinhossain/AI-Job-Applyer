@@ -1,6 +1,24 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from dotenv import load_dotenv
+import os 
 import sqlite3 
+import requests
+
+load_dotenv()
+ai_key = os.getenv('GROQ_KEY')
+
+headers = {
+    "Authorization": "Bearer {}".format(ai_key),
+    "Content-Type": "application/json"
+}
+
+payload = {
+    "model": "llama3-70b-8192",  # or mixtral
+    "messages": [
+        {"role": "user", "content": "Pretend you're a linux terminal, starting now."}
+    ]
+}
 
 app = Flask(__name__)
 CORS(app)
@@ -29,6 +47,10 @@ def data():
             cursor = conn.cursor()
             cursor.execute('SELECT link, instructions FROM SITES WHERE visited = ?', (visited,))
             results = [{"link": r[0], "instructions": r[1]} for r in cursor.fetchall()]
+        
+        print("hehe")
+        response = requests.post("https://api.groq.com/openai/v1/chat/completions", json=payload, headers=headers)
+        print(response.json()["choices"][0]["message"]["content"])
 
         return jsonify(results)
     
