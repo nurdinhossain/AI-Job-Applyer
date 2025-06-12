@@ -1,6 +1,46 @@
+'use client';
 import Image from "next/image";
+import { use, useEffect, useState } from "react";
 
 export default function Home() {
+  const [unvisitedSites, setUnvisitedSites] = useState([]);
+  const [visitedSites, setVisitedSites] = useState([]);
+
+  useEffect(() => {
+    // Fetch unvisited
+    fetch("http://localhost:5000/data?visited=0")
+      .then((res) => res.json())
+      .then((data) => setUnvisitedSites(data))
+      .catch((err) => console.error("Error fetching unvisited:", err));
+
+    // Fetch visited
+    fetch("http://localhost:5000/data?visited=1")
+      .then((res) => res.json())
+      .then((data) => setVisitedSites(data))
+      .catch((err) => console.error("Error fetching visited:", err));
+  }, []);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const link = document.getElementById("link").value;
+    const directions = document.getElementById("directions").value;
+
+    const res = await fetch("http://localhost:5000/data", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ link, directions }),
+    });
+
+    if (res.ok) {
+      alert("Site added!");
+      window.location.reload(); // Quick way to refresh data (or use state updates)
+    } else {
+      alert("Error: " + (await res.text()));
+    }
+  }
+
   return (
     <div className="flex justify-between flex-col h-screen">
       <header>
@@ -11,38 +51,22 @@ export default function Home() {
         <div> 
           <h2 className="text-2xl">Already applied✅</h2>
           <div className="overflow-auto h-48 bg-red-50">
-            <p>Penis</p>
-            <p>Penis</p>
-            <p>Penis</p>
-            <p>Penis</p>
-            <p>Penis</p>
-            <p>Penis</p>
-            <p>Penis</p>
-            <p>Penis</p>
-            <p>Penis</p>
-            <p>Penis</p>
-            <p>Penis</p>
+            {visitedSites.map((site, index) => (
+              <p key={index}>{site.link}</p>
+            ))}
           </div>
         </div>
         <div>
           <h2 className="text-2xl">List of job sites to crawl⏳➡️</h2>
           <div className="overflow-auto h-48 bg-red-50">
-            <p>Penis</p>
-            <p>Penis</p>
-            <p>Penis</p>
-            <p>Penis</p>
-            <p>Penis</p>
-            <p>Penis</p>
-            <p>Penis</p>
-            <p>Penis</p>
-            <p>Penis</p>
-            <p>Penis</p>
-            <p>Penis</p>
+            {unvisitedSites.map((site, index) => (
+              <p key={index}>{site.link}</p>
+            ))}
           </div>
         </div>
         <div>
           <h2 className="text-2xl">Add a new site➕</h2>
-          <form id="addLink">
+          <form id="addLink" onSubmit={handleSubmit}>
             <div>
               <label className="block" htmlFor="link">Link: </label>
               <input id="link" type="url" placeholder="URL"></input>
