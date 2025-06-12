@@ -5,8 +5,18 @@ import os
 import sqlite3 
 import requests
 
+# load flask appp
+app = Flask(__name__)
+CORS(app)
+
+# load environment variables
 load_dotenv()
 ai_key = os.getenv('GROQ_KEY')
+
+# folder to save uploaded files temporarily
+UPLOAD_FOLDER = 'uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 headers = {
     "Authorization": "Bearer {}".format(ai_key),
@@ -14,14 +24,11 @@ headers = {
 }
 
 payload = {
-    "model": "llama3-70b-8192",  # or mixtral
+    "model": "llama3-70b-8192",  
     "messages": [
         {"role": "user", "content": "Pretend you're a linux terminal, starting now."}
     ]
 }
-
-app = Flask(__name__)
-CORS(app)
 
 @app.route('/')
 def home():
@@ -54,13 +61,35 @@ def data():
 
         return jsonify(results)
     
-@app.route('/visit', methods=['POST'])
-def mark_visited():
-    data = request.get_json()
-    link = data.get('link')
-    with sqlite3.connect('database.db') as conn:
-        conn.execute('UPDATE SITES SET visited = 1 WHERE link = ?', (link,))
-    return "Marked as visited"
+@app.route('/crawl', methods=['POST'])
+def crawl():
+    # Get the uploaded file
+    resume_file = request.files.get('resume')
+    directions = request.form.get('directions')
+
+    if not resume_file:
+        return jsonify({"error": "No resume file uploaded"}), 400
+    if not directions:
+        return jsonify({"error": "Directions field is required"}), 400
+
+    # Save the file temporarily
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], resume_file.filename)
+    resume_file.save(file_path)
+
+    # Now you can process the file and directions however you want
+    # For example, pass to your crawler or AI service...
+
+    # Dummy response for example:
+    response = {
+        "message": "Crawl started",
+        "filename": resume_file.filename,
+        "directions": directions
+    }
+
+    # Optionally, remove the file after processing if you don't need to keep it
+    # os.remove(file_path)
+
+    return jsonify(response)
 
 if __name__ == "__main__":
     with sqlite3.connect('database.db') as conn:
