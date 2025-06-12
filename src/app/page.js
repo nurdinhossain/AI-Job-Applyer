@@ -56,7 +56,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col mb-6">
           <h2 className="text-2xl text-center">Add a new site➕</h2>
           <form id="addLink" onSubmit={handleSubmit}>
             <div>
@@ -70,7 +70,7 @@ export default function Home() {
             </div>
           </form>
 
-          <button type="submit" form="addLink" value="Submit">Submit</button>
+          <button type="submit" form="addLink" value="Submit" className="px-4 py-2 mx-auto block rounded-sm w-40 bg-blue-300">Submit</button>
         </div>
       </div>
 
@@ -92,8 +92,25 @@ export default function Home() {
           </div>
         </div>
       </div>
+      
+      <div>
+        <h2 className="text-2xl text-center mb-4">Tell me about yourself ✍️</h2>
 
-      <button>Crawl</button>
+        <label className="text-center block font-bold mb-1">Attach your resume here:</label>
+        <input type="file" id="fileInput" className="mx-auto block mb-4" />
+
+        <label className="text-center block font-bold mb-1">Give the AI any relevant information to apply:</label>
+        <textarea
+          id="directions"
+          name="directions"
+          rows="5"
+          cols="50"
+          defaultValue="Type your instructions here. Be detailed."
+          className="block mx-auto w-full max-w-xl p-2 mb-4 border border-gray-300 rounded"
+        ></textarea>
+      </div>
+
+      <button className="px-4 py-2 mx-auto block rounded-sm w-40 bg-blue-300">Crawl</button>
 
       <footer>
         <p className="text-lg font-bold text-center m-4">Made by Nurdin Hossain 😛. All rights reserved.</p>
