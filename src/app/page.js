@@ -75,7 +75,7 @@ export default function Home() {
       </div>
 
       <div className="flex justify-around">
-        <div> 
+        <div>
           <h2 className="text-2xl text-center">Already applied✅</h2>
           <div className="overflow-auto h-48 bg-green-50">
             {visitedSites.map((site, index) => (
@@ -83,7 +83,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <div> 
+        <div>
           <h2 className="text-2xl text-center">Application failed❌</h2>
           <div className="overflow-auto h-48 bg-red-50">
             {visitedSites.map((site, index) => (
@@ -92,14 +92,21 @@ export default function Home() {
           </div>
         </div>
       </div>
-      
+
       <form
         id="aiApplyForm"
         onSubmit={(e) => {
           e.preventDefault();
-          // handle form submission logic here
+          const formData = new FormData(e.target);
+
+          fetch("http://localhost:5000/crawl", {
+            method: "POST",
+            body: formData,
+          })
+            .then((res) => res.json())
+            .then((data) => console.log("Crawl result:", data))
+            .catch((err) => console.error("Crawl error:", err));
         }}
-        className="w-full max-w-2xl mx-auto my-6 p-6 bg-white rounded shadow"
       >
         <h2 className="text-2xl text-center mb-6 font-semibold">Tell me about yourself ✍️</h2>
 
@@ -132,19 +139,9 @@ export default function Home() {
       </form>
 
       <button
+        type="submit"
         className="px-4 py-2 mx-auto block rounded-sm w-40 bg-blue-300"
-        onClick={() => {
-          const form = document.getElementById("aiApplyForm");
-          const formData = new FormData(form);
-
-          fetch("http://localhost:5000/crawl", {
-            method: "POST",
-            body: formData,
-          })
-            .then((res) => res.json())
-            .then((data) => console.log("Crawl result:", data))
-            .catch((err) => console.error("Crawl error:", err));
-        }}
+        form="aiApplyForm"
       >
         Crawl
       </button>
